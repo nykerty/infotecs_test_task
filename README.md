@@ -25,7 +25,7 @@
     ./build/bin/Server
     ```
 
-4. Запустите сервер
+4. Запустите клиент
 
     ```bash
     ./build/bin/Client
