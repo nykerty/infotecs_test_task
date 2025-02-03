@@ -21,8 +21,10 @@ Client::Client() {
 void Client::initialize() {
     sock = 0;
     createSocket();
+
     t1 = std::thread(&Client::inputThread, this);
     t2 = std::thread(&Client::outputThread, this);
+
     ready = false;
     connected = false;
 }
@@ -62,8 +64,10 @@ void Client::inputThread() {
         inputCheck(input);
         std::lock_guard<std::mutex> lock(mtx);
         inputProcess(input);
+
         strncpy(buffer, input, 128);
         std::cout << "thread 1 output: " << buffer << std::endl;
+
         ready = true;
         cv.notify_one();
     }
@@ -88,11 +92,11 @@ void Client::outputThread() {
 }
 
 void Client::processData() {
-    sum = 0;
-    std::cout << "thread 2 input: " << buffer << std::endl;
     sum = sumDigits(buffer);
-
+    
+    std::cout << "thread 2 input: " << buffer << std::endl;
     std::cout << "thread 2 output: " << sum << std::endl;
+
     ready = false;
     memset(buffer, 0, sizeof(buffer));
 }
@@ -104,9 +108,8 @@ void Client::createSocket() {
     }
 
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(8080);
+    serv_addr.sin_port = htons(2270);
 
-    // Преобразование IPv4-адреса в формат сети
     if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
         std::cerr << "[Invalid address/ Address not supported]" << std::endl;
     }
@@ -125,21 +128,24 @@ void Client::connectToServer() {
 }    
 
 void Client::checkServerStatus() {        
-    int valread = read(sock, buffer, 1024);
-    if (valread <= 0) {
+    int server_status= read(sock, buffer, 1024);
+    if (server_status <= 0) {
         std::cout << "[Server is disconnected, connection attempt...]" << std::endl;
         close(sock);
-        connected = false; // Переходим в режим повторного подключения
+
+        connected = false;
+        
         return;
     }
 }
 
 void Client::sendMessage() {
     std::string message = std::to_string(sum);
-        send(sock, message.c_str(), message.size(), 0);
+    send(sock, message.c_str(), message.size(), 0);
 
-        checkServerStatus();
-        if (!connected) {
-            connectToServer();
-        }
+    //is server alive?
+    checkServerStatus();
+    if (!connected) {
+        connectToServer();
+    }
 }

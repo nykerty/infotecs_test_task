@@ -18,10 +18,12 @@ class IClient {
 
         virtual void inputThread() = 0;
         virtual void outputThread() = 0;
+
         virtual void processData() = 0;
+        virtual void sendMessage() = 0;
 
         virtual void createSocket() = 0;
+        
         virtual void checkServerStatus() = 0;
         virtual void connectToServer() = 0;
-        virtual void sendMessage() = 0;
 };

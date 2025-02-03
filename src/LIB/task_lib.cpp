@@ -7,6 +7,7 @@
 
 using namespace std;
 
+//function one
 void inputProcess(char* input_data) {
     vector<uint8_t> numbers;
 
@@ -31,6 +32,7 @@ void inputProcess(char* input_data) {
     strcpy(input_data, result.c_str());
 }
 
+//function two
 int sumDigits(char* input_data) {
     uint16_t sum = 0;
 
@@ -43,6 +45,7 @@ int sumDigits(char* input_data) {
     return sum;
 }
 
+//function three
 bool checkNumber(int sum) {
     return (sum > 9 && sum % 32 == 0);
 }
