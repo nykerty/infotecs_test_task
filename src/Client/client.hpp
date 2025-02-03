@@ -2,6 +2,11 @@
 
 #include "IClient.hpp"
 
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <stdint.h>
+
 class Client final : public IClient {
     public:
         Client();
@@ -17,12 +22,23 @@ class Client final : public IClient {
         
         void inputThread() override;
         void outputThread() override;
+        void processData() override;
+
+        void createSocket() override;
+        void checkServerStatus() override;
+        void connectToServer() override;
+        void sendMessage() override;
 
         std::thread t1;
         std::thread t2;
         std::mutex mtx;
         std::condition_variable cv;
 
+        uint16_t sum;
         bool ready;
-        char buffer[128];
+        bool connected;
+        char buffer[1024] = {0};
+
+        int sock;
+        struct sockaddr_in serv_addr;
 };

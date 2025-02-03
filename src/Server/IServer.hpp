@@ -10,4 +10,8 @@ class IServer {
         virtual void initialize() = 0;
         
         virtual void processData() = 0;
+
+        virtual void createSocket() = 0;
+
+        virtual void listenClient() = 0;
 };
